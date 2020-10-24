@@ -53,5 +53,3 @@ while err > eps: # 当计算的误差大于目标精度时，进行迭代
 print(f"经过{k}次迭代后达到精度{eps}，得到近似解为：")
 print(f"x1 = {x1}")
 print(f"x2 = {x2}")
-print(f1(-6, 0.198))
-print(f2(-6, 0.198))
