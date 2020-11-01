@@ -1,0 +1,547 @@
+% 导言区
+\documentclass[UTF8,a4paper,12pt]{ctexart}
+\usepackage[left=2.50cm, right=2.50cm, top=2.50cm, bottom=2.50cm]{geometry} %页边距
+\CTEXsetup[format={\Large\bfseries}]{section} %设置章标题居左
+ 
+\usepackage{ctex}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%
+% -- text font --
+% compile using Xelatex
+%%%%%%%%%%%%%%%%%%%%%%%
+% -- 中文字体 --
+%\setmainfont{Microsoft YaHei}  % 微软雅黑
+%\setmainfont{YouYuan}  % 幼圆    
+%\setmainfont{NSimSun}  % 新宋体
+%\setmainfont{KaiTi}    % 楷体
+%\setmainfont{SimSun}   % 宋体
+%\setmainfont{SimHei}   % 黑体
+% -- 英文字体 --
+%\usepackage{times}
+%\usepackage{mathpazo}
+%\usepackage{fourier}
+%\usepackage{charter}
+\usepackage{helvet}
+ 
+ 
+\usepackage{amsmath, amsfonts, amssymb} % math equations, symbols
+\usepackage[english]{babel}
+\usepackage{color}      % color content
+\usepackage{graphicx}   % import figures
+\usepackage{url}        % hyperlinks
+\usepackage{bm}         % bold type for equations
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{ \textbf{Input:}}     % use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{ \textbf{Initialize:}} % use Initialize in the format of Algorithm  
+\renewcommand{\algorithmicreturn}{ \textbf{Output:}}     % use Output in the format of Algorithm  
+ 
+
+ 
+\usepackage{fancyhdr} %设置页眉、页脚
+\pagestyle{plain}
+%\pagestyle{fancy}
+\lhead{}
+\chead{}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+ 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%
+%  设置水印
+%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{draftwatermark}         % 所有页加水印
+%\usepackage[firstpage]{draftwatermark} % 只有第一页加水印
+% \SetWatermarkText{Water-Mark}           % 设置水印内容
+% \SetWatermarkText{\includegraphics{fig/XXX.eps}}         % 设置水印logo
+% \SetWatermarkLightness{0.9}             % 设置水印透明度 0-1
+% \SetWatermarkScale{1}                   % 设置水印大小 0-1    
+\usepackage{subfig}
+ 
+\usepackage{fancyhdr} %设置页眉、页脚
+\pagestyle{plain}
+%\pagestyle{fancy}
+
+
+% 参考文献
+% 注意参考文献请用Biber编译，不能使用BiberTex或者BiberTex-8
+\usepackage[backend=biber,style=gb7714-2015ay]{biblatex}
+\addbibresource[location=local]{bib/sample.bib}
+
+
+\usepackage[colorlinks,
+linkcolor=black,%%修改此处为你想要的颜色
+anchorcolor=blue,%%修改此处为你想要的颜色red/blue/green/black/white/cyan/magenta/yellow
+citecolor=black,%%修改此处为你想要的颜色，例如修改blue为red
+urlcolor=cyan]{hyperref} %bookmarks
+%\hypersetup{colorlinks, bookmarks, unicode} %unicode
+
+
+\usepackage{datetime} %日期
+\renewcommand{\today}{\number\year 年 \number\month 月 \number\day 日}
+
+\usepackage[font=small,labelsep=period]{caption} \captionsetup{figurename=图,tablename=表}
+
+\newcommand{\reffig}[1]{（图\ref{#1}）}
+
+\newcommand{\degree}{^\circ}
+
+%新增
+\usepackage{booktabs,multirow,longtable}
+\usepackage{tabularx}
+\usepackage{amsmath}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
+ 
+ 
+ 
+\title{\textbf{牛顿迭代法解非线性方程组}}
+\author{ 谢文进 \thanks{学号：202021110135} }
+\date{\today}
+ 
+ %% 正文区
+\begin{document}
+    \maketitle
+     	\maketitle % need full-width title
+     	\renewcommand{\abstractname}{}%摘要名为空
+     	\begin{abstract}
+     		\noindent %摘要无缩进
+     		{\bf 摘{} 要：}
+			 {\small 在工程计算和科学研究中，如电路和电力系统计算、非线性力学、非线性积分和微分
+			 方程等多领域都要遇到非线性方程的求根问题，牛顿法是求解这些非线性方程最有效的方法之一。
+			 首先，本文在求解非线性方程的牛顿迭代法基础上，将牛顿迭代法的思想应用到求解一般的非线性方程组中，
+			 推导出相应的牛顿迭代公式。其次，用牛顿迭代法求解一个给定的非线性方程组。
+             最后，设计相应算法，用python语言编写程序实现非线性方程组的求解，分析得到的结果。}
+             \newline %另起一行
+             \textbf{关键词：}牛顿迭代法、非线性方程组、python
+     	\end{abstract}
+
+
+
+ \section{问题引入}
+	非线性方程求解问题是科学与工程计算中常见的问题，对于一般的非线性方程，很难直接求出其准确解，
+	这时就需要借助于数值方法。在解决非线性方程的方法中，牛顿迭代法是一种经典的解法，其思想是以线
+	性方程的解逼近非线性方程的解。不过在实际问题中，往往涉及的变量与非线性方程不止一个，
+	需要求解一个非线性方程组，这时就需要对非线性方程的牛顿迭代法进行推广。
+
+	本文以下述方程组为例，先分析非线性方程的牛顿迭代法，再将其推广到非线性方程组，
+	从而设计相应的算法，对该方程组求解，验证算法。
+	\begin{equation}
+		\begin{cases}({x}_1+3)({x}_2^3-7)+18=0\\sin({x}_2e^{{x}_1}-1)=0
+		\end{cases}	
+	\end{equation}
+	
+
+
+
+
+\section{算法推导} 
+	\subsection{牛顿迭代法解非线性方程}
+	牛顿方法是一种特殊形式的迭代法，它是求解非线性方程最有效的方法之一。其基本思想是：
+	利用泰勒公式将非线性函数在方程的某个近似根处展开，然后截取其线性部分作为函数的一个近似，
+	通过解一个一元一次方程来获得原方程的一个新的近似根。 
+   
+	具体地说，设函数$f(x)$在有根区间$[a,b]$上二次连续可微，${x}_0$是根$x^*$的一个
+	近似值，则$f(x)$在${x}_0$处的泰勒展开式为
+	\begin{displaymath}
+		f(x)=f({x}_0)+f'({x}_0)(x-{x}_0)+\frac{f''(\xi)}{2!}(x-{x}_0),
+	\end{displaymath}
+	其中$\xi$在$x$与${x}_0$之间。现在截取泰勒展开式中的线性部分，以此近似代替函数$f(x)$，
+	则方程$f(x)=0$为
+	\begin{displaymath}
+	   f({x}_0)+f'({x}_0)(x-{x}_0)=0.
+   \end{displaymath}
+   设$f'({x}_0)\neq 0$,解得
+   \begin{displaymath}
+	   {x}_1={x}_0-\frac{f({x}_0)}{f'({x}_0)},
+   \end{displaymath}
+   于是得到根$x^*$的近似值${x}_1$。一般，在${x}_k$附近可得到方程为
+   \begin{displaymath}
+	   f({x}_k)+f'({x}_k)(x-{x}_k)=0,
+   \end{displaymath}
+   设$f'({x}_k)\neq 0$,解得
+   \begin{equation} \label{newton}
+	   {x}_{k+1}={x}_k-\frac{f({x}_k)}{f'({x}_k)} \qquad (k=0,1,2,\cdots),
+   \end{equation}
+   由此得到迭代序列
+   \begin{displaymath}
+	   {x}_0,{x}_1,\cdots,{x}_k,\cdots.
+   \end{displaymath}
+   迭代格式(\ref{newton})即为牛顿迭代法。
+   
+   根据导数的几何意义及上述推导过程可知，牛顿法的几何上表现
+   为：${x}_k$是函数$f(x)$在点$({x}_k,f({x}_k))$处的
+   切线与$x$轴的交点。因此，牛顿法的本质是一个不断用切线来
+   近似曲线的过程，故牛顿法也称为切线法。
+   
+	\subsection{牛顿迭代法解非线性方程组}
+	考虑方程组
+	\begin{equation} \label{eq_arry}%要调用宏包amsmath
+	   \begin{cases}
+		   {f}_1({x}_1,{x}_2,\cdots,{x}_n)=0\\
+		   {f}_2({x}_1,{x}_2,\cdots,{x}_n)=0\\
+		   \qquad \qquad \vdots\\
+		   {f}_n({x}_1,{x}_2,\cdots,{x}_n)=0
+	   \end{cases}	
+   \end{equation}
+   其中${f}_1,{f}_2,\cdots,{f}_n$为$({x}_1,{x}_2,\cdots,{x}_n)$的多元函数。
+   记$\boldsymbol{x}=({x}_1,{x}_2,\cdots,{x}_n)^{T}$,
+   $\boldsymbol{F}=({f}_1,{f}_2,\cdots,{f}_n)^{T}$，则方程(\ref{eq_arry})为
+   \begin{equation} \label{eq}
+	   \boldsymbol{F}(\boldsymbol{x})=0.
+   \end{equation}
+   
+   将牛顿迭代法的思想运用到每一个方程${f}_i({x}_1,{x}_2,\cdots,{x}_n)=0(i=1,2,\cdots,n)$中,
+   将${f}_i(\boldsymbol{x})$在$\boldsymbol{x}^{(k)}(k=0,1,2,\cdots)$处泰勒展开并截取线性部分，可得
+   \begin{equation} \label{eq2}
+	   \begin{cases}
+		   {f}_1(\boldsymbol{x})={f}_1(\boldsymbol{x}^{(k)})+[\nabla{f}_1(\boldsymbol{x}^{(k)})]^{T}(\boldsymbol{x}-\boldsymbol{x}^{(k)})\\
+		   {f}_2(\boldsymbol{x})={f}_2(\boldsymbol{x}^{(k)})+[\nabla{f}_2(\boldsymbol{x}^{(k)})]^{T}(\boldsymbol{x}-\boldsymbol{x}^{(k)})\\
+		   \qquad \qquad \vdots\\
+		   {f}_n(\boldsymbol{x})={f}_n(\boldsymbol{x}^{(k)})+[\nabla{f}_n(\boldsymbol{x}^{(k)})]^{T}(\boldsymbol{x}-\boldsymbol{x}^{(k)})
+	   \end{cases}	
+   \end{equation}
+   将方程组(\ref{eq2})用矩阵形式表示，得到
+   \begin{displaymath}
+	   \boldsymbol{F}(\boldsymbol{x})=\boldsymbol{F}(\boldsymbol{x}^{(k)})
+	   +\boldsymbol{F}'(\boldsymbol{x}^{(k)})(\boldsymbol{x}-\boldsymbol{x}^{(k)})，
+   \end{displaymath}
+   其中，$\boldsymbol{F}'(\boldsymbol{x})$为$Jacobi$矩阵
+   \begin{equation*}
+	   \boldsymbol{F}'(\boldsymbol{x})=\begin{bmatrix}
+		   \frac{\partial{f}_1(\boldsymbol{x})}{\partial{x}_1}
+		   & \frac{\partial{f}_1(\boldsymbol{x})}{\partial{x}_2}
+		   & \cdots
+		   & \frac{\partial{f}_1(\boldsymbol{x})}{\partial{x}_n}\\
+   
+		   \frac{\partial{f}_2(\boldsymbol{x})}{\partial{x}_1}
+		   & \frac{\partial{f}_2(\boldsymbol{x})}{\partial{x}_2}
+		   & \cdots
+		   & \frac{\partial{f}_2(\boldsymbol{x})}{\partial{x}_n}\\
+   
+   
+		   \vdots
+		   & \vdots
+		   & \ddots
+		   & \vdots\\
+   
+		   \frac{\partial{f}_n(\boldsymbol{x})}{\partial{x}_1}
+		   & \frac{\partial{f}_n(\boldsymbol{x})}{\partial{x}_2}
+		   & \cdots
+		   & \frac{\partial{f}_n(\boldsymbol{x})}{\partial{x}_n}\\
+	   \end{bmatrix}
+   \end{equation*}
+   因此，由上述方程组解得
+   \begin{equation} \label{eq3}
+	   \boldsymbol{x}^{(k+1)}=\boldsymbol{x}^{(k)}-[\boldsymbol{F}'(\boldsymbol{x}^{(k)}]^{-1}
+	   \boldsymbol{F}(\boldsymbol{x}^{(k)}),k=0,1,\cdots
+   \end{equation}
+   其中，$[\boldsymbol{F}'(\boldsymbol{x})]^{-1}$是非线性方程组
+   的$Jacobi$矩阵的逆矩阵。
+   
+   \subsection{牛顿迭代法解非线性方程组实例}
+   应用牛顿迭代法解下述非线性方程组：
+   \begin{equation} \label{eq4}
+	   \begin{cases}
+		   ({x}_1+3)({x}_2^3-7)+18=0\\
+		   sin({x}_2e^{{x}_1}-1)=0
+	   \end{cases}	
+   \end{equation}
+   记$\boldsymbol{x}=(x_1,x_2)^{T}$,$f_1(\boldsymbol{x})=({x}_1+3)({x}_2^3-7)+18$,
+   $f_2(\boldsymbol{x})=sin({x}_2e^{{x}_1}-1)$,
+   $\boldsymbol{F}(\boldsymbol{x})=(f_1,f_2)^{T}$.
+   因此，由(\ref{eq3})可得
+   \begin{equation} \label{eq5}
+	   \boldsymbol{x}^{(k+1)}=\boldsymbol{x}^{(k)}-[\boldsymbol{F}'(\boldsymbol{x}^{(k)}]^{-1}
+	   \boldsymbol{F}(\boldsymbol{x}^{(k)}),k=0,1,\cdots
+   \end{equation}
+   计算方程组(\ref{eq4})的$Jacobi$矩阵$\boldsymbol{F}'(\boldsymbol{x})$得
+   \begin{displaymath}
+	   \boldsymbol{F}'(\boldsymbol{x})=\begin{bmatrix}
+		   x_2^3-7
+		   & 3(x_1+3)x_2^2\\
+		   
+		   cos(x_2e^{x_1}-1)x_2e^{x_1}
+		   & cos(x_2e^{x_1}-1)e^{x_1}\\
+	   \end{bmatrix}
+   \end{displaymath}
+   将计算得到的$Jacobi$矩阵$\boldsymbol{F}'(\boldsymbol{x})$带入迭代格式(\ref{eq5})中，
+   即可得到原非线性方程组(\ref{eq4})的迭代格式。
+
+   \section{算法设计思想} 
+   \subsection{牛顿迭代法解一般非线性方程}
+   牛顿迭代法解一般非线性方程组的迭代格式已在上章中给出，
+   在进行算法设计时，还需考虑终止条件，由于牛顿法本身就是
+   迭代法，因此可以采用与简单迭代法相同的终止条件。于是可以
+   写出算法过程如下。
+   
+   \textbf{算法1}（牛顿法解非线性方程组）
+   
+   步1 \;取初始点$\boldsymbol{x}_0$，最大迭代次数$N$和精度要求$\varepsilon$，
+   置$k:=0$;
+   
+   步2 \;计算 
+   \begin{displaymath}
+	   \boldsymbol{x}^{(k+1)}=\boldsymbol{x}^{(k)}-[\boldsymbol{F}'(\boldsymbol{x})^{(k)}]^{-1}
+	   \boldsymbol{F}(\boldsymbol{x}^{(k)}); 
+   \end{displaymath}
+   
+   步3 \;若$\parallel\boldsymbol{x}^{(k+1)}-\boldsymbol{x}^{(k)}\parallel_2<\varepsilon$，
+   则停算；
+   
+   步4 \;若$k=N$，则停算；否则，置$k:=k+1$，转步2.
+   
+   \subsection{牛顿迭代法解非线性方程实例}
+   对于如下的非线性方程组：
+   \begin{displaymath}
+	   \begin{cases}
+		   ({x}_1+3)({x}_2^3-7)+18=0\\
+		   sin({x}_2e^{{x}_1}-1)=0
+	   \end{cases}	
+   \end{displaymath}
+   由算法1可以得到求解该方程组的具体算法，算法过程如下。
+   
+   \textbf{算法2}（牛顿法解非线性方程组实例）
+   
+   步1 \;取初始点$x_1,x_2$，最大迭代次数$N$和精度要求$\varepsilon$，
+   置迭代次数$k:=0$;
+   
+   步2 \;计算函数值$\boldsymbol{F}(\boldsymbol{x})=(f_1(x_1,x_2),f_1(x_1,x_2))^{T}$
+   \begin{displaymath}
+	   f_1(x_1,x_2)=({x}_1+3)({x}_2^3-7)+18,
+   \end{displaymath}
+   \begin{displaymath}
+	   f_2(x_1,x_2)=sin({x}_2e^{{x}_1}-1);
+   \end{displaymath}
+   
+   步3 \;计算$Jacobi$矩阵$\boldsymbol{F}'(\boldsymbol{x})$
+   \begin{displaymath}
+	   \boldsymbol{F}'(\boldsymbol{x})=\begin{bmatrix}
+		   x_2^3-7
+		   & 3(x_1+3)x_2^2\\
+		   
+		   cos(x_2e^{x_1}-1)x_2e^{x_1}
+		   & cos(x_2e^{x_1}-1)e^{x_1}\\
+	   \end{bmatrix}
+   \end{displaymath}
+   
+   步4 \;计算迭代后的根$\boldsymbol{x}^*=(x_1^*,x_2^*)^{T}$
+   \begin{displaymath}
+	   \boldsymbol{x}^*=\boldsymbol{x}-[\boldsymbol{F}'(\boldsymbol{x})]^{-1}
+	   \boldsymbol{F}(\boldsymbol{x}); 
+   \end{displaymath}
+   
+   步5 \; 若$\sqrt{(x_1^*-x_1)^2+(x_2^*-x_2)^2}<\varepsilon$，
+   则停算；
+   
+   步6 \; 若$k=N$，则停算；否则，置$x_1:=x_1^*,x_2:=x_2^*,k:=k+1$，转步2.
+	
+ \section{编程实现}
+ 根据算法2，用python语言编写程序，代码如下。
+ \begin{lstlisting}
+    import math # 引入数学函数库
+    x1 = float(input("请输入初始值x1："))
+    x2 = float(input("请输入初始值x2："))
+    eps = float(input("请输入精度："))
+    k = 0 # k表示迭代次数
+    err = 1 # err表示计算得到的误差
+    N = 500 # 最大迭代次数
+    
+    
+    def f1(x1, x2): # 计算函数f1的函数值
+        f1 = (x1 + 3) * ((math.pow(x2, 3) - 7)) + 18
+        return f1
+    
+    def f2(x1, x2): # 计算函数f2的函数值
+        f2 = math.sin(x2 * math.exp(x1) - 1)
+        return f2
+    
+    def Jacobi(x1, x2): # 计算Jacobi矩阵
+        df1_x1 = math.pow(x2, 3) - 7
+        df1_x2 = (x1 + 3) * 3 * math.pow(x2, 2)
+        df2_x1 = math.cos(x2 * math.exp(x1) - 1) * x2 * math.exp(x1)
+        df2_x2 = math.cos(x2 * math.exp(x1) - 1) * math.exp(x1)
+        J = [df1_x1, df1_x2, df2_x1, df2_x2]
+        return J
+    
+    def D(x1, x2): # 计算Jacobi矩阵的行列式
+        J = Jacobi(x1, x2)
+        D = J[0] * J[3] - J[1] * J[2]
+        return D
+    
+    def error(a0, b0, a1, b1): # 误差函数
+        error = math.sqrt(math.pow(a0 - a1, 2) + math.pow(b0 - b1, 2))
+        return error
+    
+    
+    while err > eps and k < N: # 当计算的误差大于目标精度,且未超过最大迭代次数时，进行迭代
+        k = k + 1 
+        print(f"第{k}次迭代结果：")
+        J = Jacobi(x1, x2)
+        D0 = D(x1, x2)
+        f_1 = f1(x1, x2)
+        f_2 = f2(x1, x2)
+        x_1 = x1 - (J[3] * f_1 - J[1] * f_2)/D0 # 计算迭代后x1的值
+        x_2 = x2 - (- J[2] * f_1 + J[0] * f_2)/D0 # 计算迭代后x2的值
+        print(f"x1 = {x_1}")
+        print(f"x2 = {x_2}")
+        print(f"f1 = {f_1}, f2 = {f_2}")
+        err = error(x1, x2, x_1, x_2)
+        print(f"当前误差：{err}")
+        x1 = x_1
+        x2 = x_2
+        print('-' * 20)
+    
+    print(f"经过{k}次迭代后达到精度{eps}，得到近似解为：")
+    print(f"x1 = {x1}")
+    print(f"x2 = {x2}")
+\end{lstlisting}
+ 
+\section{结果分析}
+当取初值$x_1=2,x_2=3$，精度$\varepsilon=1e-10$时，运行前述Python程序，
+得到的迭代结果如下表所示。
+
+
+\begin{longtable}{ccccc}
+    \caption{初值为$x_1=2,x_2=3$迭代结果表}\\\hline
+    $k$ & $x_1$ & $x_2$ & 
+    \multicolumn{1}{c}{$\varepsilon$} \\\hline
+    \endfirsthead
+    \caption[]{初值为$x_1=2,x_2=3$迭代结果表(续表)}\\
+    \multicolumn{4}{r}{\footnotesize 接上页}\\\hline
+    $k$ & $x_1$ & $x_2$ & \multicolumn{1}{c}{$\varepsilon$}\\
+    \hline\endhead
+    \hline\multicolumn{4}{r}{\footnotesize 接下页}\\
+    \endfoot\hline\hline\endlastfoot
+    0 & 2 & 3  &   \\
+    1 & 2.3577595003166416 & 2.0729245184716087 & 0.9937106261472258  \\
+    2 & 2.6453725887186104 & 1.6564033096056225 & 0.5061730989052077  \\
+    3 & 2.682536572837465  & 1.569304046831083  & 0.09469658542658627  \\
+    4 & 2.687055240456386  & 1.5652630719960805 & 0.006061999230238282  \\
+    5 & 2.687059785035585  & 1.5652561930950146 & 8.244542435561323e-06  \\
+    6 & 2.6870597850598585 & 1.5652561930721185 & 3.336816135191078e-11  \\
+\end{longtable} 
+
+由迭代结果看出，程序经过六次迭代后停机，
+最后一次迭代结果为为
+$x_1$=2.68705978 
+50598585,
+$x_2$=1.5652561930721185.
+将得到的解带入原函数$f_1(x_1,x_2)$和$f_2(x_1,x_2)$，得到函数值分别为
+$f_1(x_1,x_2)$=1.0338929712361278e-09,
+$f_2(x_1,x_2)$=2.2176479779716547e-10,
+可见$x_1$=2.6870597850598585,
+$x_2$=1.5652561930721185
+确实是原方程组的解。
+
+当取初值$x_1=2,x_2=2$，精度$\varepsilon=1e-10$时，运行Python程序，
+得到的迭代结果如下表所示。
+
+\begin{longtable}{ccccc}
+    \caption{初值为$x_1=2,x_2=2$迭代结果表}\\\hline
+    $k$ & $x_1$ & $x_2$ & 
+    \multicolumn{1}{c}{$\varepsilon$} \\\hline
+    \endfirsthead
+    \caption[]{初值为$x_1=2,x_2=3$迭代结果表(续表)}\\
+    \multicolumn{4}{r}{\footnotesize 接上页}\\\hline
+    $k$ & $x_1$ & $x_2$ & \multicolumn{1}{c}{$\varepsilon$}\\
+    \hline\endhead
+    \hline\multicolumn{4}{r}{\footnotesize 接下页}\\
+    \endfoot\hline\hline\endlastfoot
+    0 & 2 & 2  &   \\
+    1 & 2.011471012354185  & 1.6164754831274302 & 0.3836960244344056  \\
+    2 & 2.9881025302913233 & 1.5814476009135245 & 0.9772594713588557  \\
+    3 & 3.035532256463211  & 1.5898434220433784 & 0.048167091848945444  \\
+    4 & 3.0125033822644944 & 1.5882337091793404 & 0.02308506492009419   \\
+    5 & 3.015912616947221  & 1.5884502145413057 & 0.003416102412643036   \\
+    6 & 3.015891978438723  & 1.5884487063128803 & 2.0693544549301572e-05   \\
+    7 & 3.0158919782227653 & 1.5884487062920842 & 2.1695646005478817e-10   \\
+    8 & 3.0158919782227653 & 1.5884487062920842 & 0.0   \\
+\end{longtable} 
+由迭代结果看出，程序经过八次迭代后停机，
+最后一次迭代结果为为
+$x_1$=3.01589197 
+82227653,
+$x_2$=1.5884487062920842.
+将得到的解带入原函数$f_1(x_1,x_2)$和$f_2(x_1,x_2)$，得到函数值分别为
+$f_1(x_1,x_2)$=0.0,
+$f_2(x_1,x_2)$=-1.2246467991473533e-15,
+可见$x_1$=3.015891978 
+2227653,
+$x_2$=1.5884487062920842
+确实是原方程组的解。
+
+由上述结果可以看出，给定两组不同的初值，分别是$x_1=2,x_2=3$和$x_1=2,x_2=2$，在精度
+同为$\varepsilon=1e-10$的情况下，得到的解分别是
+$x_1$=2.6870597850598585,
+$x_2$=1.5652561930721185和
+$x_1$=3.0158919782227653,
+$x_2$=1.5884487062920842，
+可以明显看出得到的两组解相差较大，接着进行多组数据试算，给定不同的初值，
+且精度均为$\varepsilon=1e-10$，得到如下的迭代结果。
+
+\begin{longtable}{cccccc}
+    \caption{不同初值迭代结果表}\\\hline
+    组号 & 初值$x_1$ & 初值$x_2$ & 迭代结果$x_1$ & 
+    \multicolumn{1}{c}{迭代结果$x_2$} \\\hline
+    \endfirsthead
+    \caption[]{不同初值迭代结果表(续表)}\\
+    \multicolumn{5}{r}{\footnotesize 接上页}\\\hline
+    组号 & 初值$x_1$ & 初值$x_2$ & 迭代结果$x_1$ & \multicolumn{1}{c}{迭代结果$x_2$}\\
+    \hline\endhead
+    \hline\multicolumn{5}{r}{\footnotesize 接下页}\\
+    \endfoot\hline\hline\endlastfoot
+    1  & 0  & 0 & -1.5287607556314744e-17 &  1.0  \\
+    2  & 0  & 2 & 1.2130131815152444e-16  & 0.9999999999999999 \\
+    3  & 0  & 20 & 2.1871707769559285     & 1.5226057929848504 \\
+    4  & 2   & 2 & 3.0158919782227653      &  1.5884487062920842\\
+    5  & 2  & 3 & 2.6870597850598585      &  1.5652561930721185\\
+    6  & 2 & 20 & 3.8443642211662006     & 1.6349222088867337 \\
+    7  & 3  & 3 & 3.5695350018269494      &  1.6210854956395038\\
+    8  & 3 & 10 & 4.5135417289631965      & 1.6636246272738795\\
+    9  & 5  & 4 & 5.738127473935654       & 1.7031156353380565\\
+    10 & 6  & 10 & 7.462572160226095      & 1.7412715590104693\\
+    11 & 13 & 8 & 14.25782137856104       & 1.8127687397013865 \\
+    12 & 15 & 20 & 17.002430802281047     & 1.8271710571063149 \\
+    13 & 40 & 1 & 38.578021558384144      & 1.872653545370392 \\
+    14 & 40 & 50 & 42.736888572232296     & 1.876387792811882 \\
+    15 & 500 & 600 & 504.7689638646819    & 1.9096965799093184 \\  
+\end{longtable} 
+由上表可以看出，给定不同的初值，会得到不同的迭代结果，同时会发现迭代结果$x_1$的值
+变化较大，而$x_2$的值相对稳定。由上述分析也可得出原方程组存在多组解。 
+ 
+ 
+\renewcommand\refname{参考文献}
+%\bibliomatter
+\nocite{*} %打印全部参考文献
+\printbibliography
+\end{document}
